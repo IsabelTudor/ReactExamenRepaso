@@ -1,7 +1,5 @@
-export default function Articulos({articulosDisponibles}){
+export default function Articulos({articulosDisponibles, setPintaArticulos, setPintarCesta}){
     const username = JSON.parse(localStorage.getItem("usuarioIniciado"));
-
-
     function agregarArticulo(articulo) {
         if (articulo.unidades <= 0) {
             alert("No puedes comprar un artículo si no hay stock");
@@ -17,7 +15,7 @@ export default function Articulos({articulosDisponibles}){
                 .then(data => {
                     if (data.length === 1) {
                         // Si el artículo ya está en la cesta, actualiza las unidades en la cesta
-                        fetch( "http://44.221.16.151:3000/cesta/" + data[0].id, {
+                        fetch(`http://44.221.16.151:3000/cesta/${data[0].id}`, {
                             method: 'PATCH',
                             headers: {
                                 'Content-Type': 'application/json',
@@ -47,7 +45,7 @@ export default function Articulos({articulosDisponibles}){
                                 nombre: articulo.nombre,
                                 precio: articulo.precio,
                                 unidades: 1, // Añade el artículo con 1 unidad
-                                username:username[0].username
+                                username: username[0].username
                             }),
                         })
                         .then(response => {
@@ -68,7 +66,7 @@ export default function Articulos({articulosDisponibles}){
                 });
     
             // Actualiza el número de unidades del artículo en la tienda
-            fetch("http://44.221.16.151:3000/articulos/" + articulo.id, {
+            fetch(`http://44.221.16.151:3000/articulos/${articulo.id}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
@@ -92,25 +90,27 @@ export default function Articulos({articulosDisponibles}){
     return(
         <>
         <h1>Articulos</h1>
-        <table>
-            <thead>
-                <tr>
-                    <td>Nombre</td>
-                    <td>Precio</td>
-                    <td>Unidades</td>
-                </tr>
-            </thead>
-            <tbody>
-                {articulosDisponibles.map(articulo=>(
-                    <tr key={articulo.id}>
-                        <td>{articulo.nombre}</td>
-                        <td>{articulo.precio}</td>
-                        <td>{articulo.unidades}</td>
-                        <td><button>Comprar</button></td>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <td>Nombre</td>
+                        <td>Precio</td>
+                        <td>Unidades</td>
+                        <td>Acciones</td>
                     </tr>
-                ))}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    {articulosDisponibles.map(articulo => (
+                        <tr key={articulo.id}>
+                            <td>{articulo.nombre}</td>
+                            <td>{articulo.precio}</td>
+                            <td>{articulo.unidades}</td>
+                            <td><button onClick={() => agregarArticulo(articulo)}>Comprar</button></td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
         </>
     )
 }

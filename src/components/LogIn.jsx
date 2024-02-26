@@ -1,15 +1,17 @@
-import Articulos from "./Articulos"
-import CestaArticulos from "./CestaArticulos"
-import BarraBusqueda from "./BarraBusqueda"
 import { useEffect, useState } from "react"
+import BarraBusqueda from "./BarraBusqueda";
+import Articulos from "./LogInComponents/Articulos";
+import Cesta from "./LogInComponents/Cesta";
 export default function LogIn({filter,setFilter,articulosDisponibles,setPintaArticulos,setIsUsuario}){
     const username=JSON.parse(localStorage.getItem("usuarioIniciado"));
     const [articulosCesta, setArticulosCesta] = useState([]);
+     // Estado para indicar si es necesario volver a cargar la cesta
     const [pintarCesta, setPintarCesta] = useState(false);
     useEffect(()=>{
         fetch(`http://44.221.16.151:3000/cesta?username=${username[0].username}`) 
         .then(response => {
             if (response.ok){
+                
                 setPintaArticulos(true)
                 return response.json();
             }
@@ -25,7 +27,7 @@ export default function LogIn({filter,setFilter,articulosDisponibles,setPintaArt
         }, [pintarCesta]);
         function cerrarSesion() {
             localStorage.setItem("usuarioIniciado", JSON.stringify([]))
-            setIsUserLogin(JSON.parse(localStorage.getItem("usuarioIniciado")))
+            setIsUsuario(JSON.parse(localStorage.getItem("usuarioIniciado")))
         }
     return (
         <>
@@ -36,7 +38,7 @@ export default function LogIn({filter,setFilter,articulosDisponibles,setPintaArt
             <br />
             <BarraBusqueda filterText={filter} setFilterText={setFilter}/>
             <Articulos articulosDisponibles={articulosDisponibles} setPintaArticulos={setPintaArticulos} setPintarCesta={setPintarCesta}/>
-            <CestaArticulos articulosCesta={articulosCesta} setPintaArticulos={setPintaArticulos} setPintarCesta={setPintarCesta}/>
+            <Cesta articulosCesta={articulosCesta} setPintaArticulos={setPintaArticulos} setPintarCesta={setPintarCesta}/>
         </>
     )
 }

@@ -1,6 +1,6 @@
-export default function InicioSesion({username, setUsername, password, setPassword, setClickButtonRegistrar, setIsUserLogin}) {
-
+export default function InicioSesion({username, setUsername, password, setPassword, setClickButtonRegistrar, setIsUsuario}){
     function iniciarSesion(){
+        //le pedimos los datos a el servidor
         fetch(`http://44.221.16.151:3000/usuarios?username=${username}`)
         .then(response => {
           if (response.ok)
@@ -9,10 +9,11 @@ export default function InicioSesion({username, setUsername, password, setPasswo
           throw new Error(response.status);
         })
         .then(data => {
+            //comprobamos la longitud y cuando veamos que esta bien , guardamos los datos en el localstorage
             if(data.length == 1){
                 if(data[0].password == password){
                     localStorage.setItem("usuarioIniciado", JSON.stringify(data));
-                    setIsUserLogin(JSON.parse(localStorage.getItem("usuarioIniciado")));
+                    setIsUsuario(JSON.parse(localStorage.getItem("usuarioIniciado")));
                 }else{
                     document.getElementById("mensajesError").innerText="La contraseña no es correcta";
                 }
@@ -24,8 +25,6 @@ export default function InicioSesion({username, setUsername, password, setPasswo
           console.error("ERROR: ", err.message);
         });
     }
-
-
     return(
         <fieldset>
             <legend> Inicio de sesión</legend>
